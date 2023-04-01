@@ -43,7 +43,6 @@ const DummyScreen = () => {
       <hr />
       <div>
         <buttton className="btn btn-primary w-25" onClick={handleVerify}>Veify Your E-mail</buttton>
-        <button className="btn btn-primary w-25" onClick={handleVerify}>Veify Your E-mail</button>
       </div>
     </div>
   )

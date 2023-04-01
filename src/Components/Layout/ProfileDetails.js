@@ -1,6 +1,7 @@
 import React, { useContext, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { expContext } from '../Store/ExpenseContext';
+
 const ProfileDetails = () => {
     let userName = useRef();
     let profileUrl = useRef();
@@ -80,4 +81,5 @@ const ProfileDetails = () => {
         </div>
     )
 }
+
 export default ProfileDetails

@@ -2,10 +2,12 @@ import React, { useContext, useRef } from 'react'
 import { useHistory } from 'react-router-dom';
 import { expContext } from '../Store/ExpenseContext';
 import './Login.Module.css'
+
 const Login = () => {
     let enteredpass = useRef();
     let enteredEmail = useRef();
     let enteredConfirmPass = useRef();
+
     let ctx=useContext(expContext);
     const history=useHistory();
     const submitHandler = async (e) => {
@@ -27,6 +29,7 @@ const Login = () => {
                             },
                         }
                     )
+
                     if (responce.ok) {
                         let data = await responce.json();
                         console.log("Authantication Token:",ctx.token);
@@ -60,6 +63,7 @@ const Login = () => {
                         },
                     }
                 )
+
                 if (responce.ok) {
                     let data = await responce.json();
                     console.log("Authantication Token:", data.idToken);
@@ -80,7 +84,6 @@ const Login = () => {
                                 },
                             }
                         )
-
                         if (responce.ok) {
                             let data=await responce.json();
                             console.log(data.users[0])
@@ -105,7 +108,10 @@ const Login = () => {
                 alert("please fill all the data")
             }
         }
+
+
     }
+
     return (
         <div>
             {!ctx.token && <section className="auth">
@@ -148,4 +154,5 @@ const Login = () => {
         </div>
     )
 }
+
 export default Login
