@@ -1,58 +1,77 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { expContext } from '../Store/ExpenseContext';
 
-let expanses = [
-    {
-        expenseAmount: 100,
-        expenseDesc: "KGF",
-        expenseCatagory: "movie"
-    },
-    {
-        expenseAmount: 100,
-        expenseDesc: "HERA PHERI",
-        expenseCatagory: "movie"
-    },
-    {
-        expenseAmount: 100,
-        expenseDesc: "BHAUBALI",
-        expenseCatagory: "movie"
-    },
-    {
-        expenseAmount: 100,
-        expenseDesc: "PATHAAN",
-        expenseCatagory: "movie"
-    },
-    {
-        expenseAmount: 100,
-        expenseDesc: "RRR",
-        expenseCatagory: "movie"
-    },
-    {
-        expenseAmount: 100,
-        expenseDesc: "DON",
-        expenseCatagory: "movie"
-    },
-    {
-        expenseAmount: 100,
-        expenseDesc: "ALLADIN",
-        expenseCatagory: "movie"
-    }
-]
+
+
 const Expenses = () => {
     const ctx = useContext(expContext);
+    useEffect( () => {
+        async function fetchData(){
+            try {
+                let responce = await fetch(
+                    'https://tracker-9f91a-default-rtdb.firebaseio.com/',
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                )
+                if (responce.ok) {
+                    let data = await responce.json();
+                    console.log(data);
+                    let finaldata = [];
+                    for (const key in data) {
+                        finaldata.push(data[key])
+                    }
+                    ctx.setExpenses(finaldata)
+                } else {
+                    throw new Error("Failed to load previous expense")
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchData();
+        return () => { }
+    }, [])
+
+   
     const enteredaAmount = useRef();
     const enteredaDesc = useRef();
     const enteredaCatagory = useRef();
-    const handleSubmitExpense = (e) => {
+    const handleSubmitExpense = async (e) => {
         e.preventDefault();
         const newAddedExpense = {
             expenseAmount: enteredaAmount.current.value,
             expenseDesc: enteredaDesc.current.value,
             expenseCatagory: enteredaCatagory.current.value
         }
+
         if (enteredaAmount.current.value.length > 0 && enteredaDesc.current.value.length > 0 && enteredaCatagory.current.value.length > 0) {
             console.log(newAddedExpense);
-            ctx.setExpenses([...ctx.expenses, newAddedExpense])
+            try {
+                let responce = await fetch(
+                    'https://expensetracker-5f883-default-rtdb.firebaseio.com/',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(newAddedExpense),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                )
+                if (responce.ok) {
+                    let data = await responce.json();
+                    console.log(data);
+                    alert("added expanse successfully");
+                    ctx.setExpenses([...ctx.expenses, newAddedExpense])
+                } else {
+                    throw new Error("Failed to add expense")
+                }
+            } catch (error) {
+                console.log(error)
+            }
         } else {
             alert("please fill all the data")
         }
@@ -65,7 +84,7 @@ const Expenses = () => {
                     <div className="col-auto">
                         <label className="visually-hidden" htmlFor="expenseamount">expenseamount:</label>
                         <div className="input-group">
-                            <div className="input-group-text">Choose expense amount:</div>
+                            <div className="input-group-text">Choose expenseamount:</div>
                             <input type="text" className="form-control" ref={enteredaAmount} id="expenseamount" />
                         </div>
                     </div>
@@ -80,7 +99,7 @@ const Expenses = () => {
                         <label className="visually-hidden" htmlFor="catagory">description:</label>
                         <div className="input-group">
                             <select className="form-select" ref={enteredaCatagory} id="catagory">
-                                <option value="choose a catagory" selected>Choose a catagory</option>
+                                <option value="choose a catagory">Choose a catagory</option>
                                 <option value="movie">movie</option>
                                 <option value="food">food</option>
                                 <option value="electricity">electricity</option>
@@ -95,13 +114,13 @@ const Expenses = () => {
                     </div>
                 </form>
             </div>
-            {ctx.expenses.length>0 && <h1 className='text-center'>Expenses</h1>}
+            {ctx.expenses.length > 0 && <h1 className='text-center'>Expenses</h1>}
             <div className='row text-center '>{ctx.expenses.map((expense) => {
-                return <div className="card w-25 col-4 mx-3 my-3">
+                return <div key={Math.random()} className="card w-25 col-4 mx-3 my-3">
                     <div className="card-body">
                         <h5 className="card-title">Amount:<span className='text-primary'>{expense.expenseAmount}    </span></h5>
                         <h5 className="card-title">Description:<span className='text-primary'>{expense.expenseDesc} </span></h5>
-                        <h5 className="card-title">Category:<span className='text-primary'>{expense.expenseCatagory}</span> </h5>
+                        <h5 className="card-title">Catagory:<span className='text-primary'>{expense.expenseCatagory}</span> </h5>
                     </div>
                 </div>
             })}</div>
