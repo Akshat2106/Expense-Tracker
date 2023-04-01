@@ -2,12 +2,10 @@ import React, { useContext, useRef } from 'react'
 import { useHistory } from 'react-router-dom';
 import { expContext } from '../Store/ExpenseContext';
 import './Login.Module.css'
-
 const Login = () => {
     let enteredpass = useRef();
     let enteredEmail = useRef();
     let enteredConfirmPass = useRef();
-
     let ctx=useContext(expContext);
     const history=useHistory();
     const submitHandler = async (e) => {
@@ -29,7 +27,6 @@ const Login = () => {
                             },
                         }
                     )
-
                     if (responce.ok) {
                         let data = await responce.json();
                         console.log("Authantication Token:",ctx.token);
@@ -42,7 +39,7 @@ const Login = () => {
                     }
                 }
                 else {
-                    alert("password doesn't match")
+                    alert("Password and confirm passwords are not matching")
                 }
             } else {
                 alert("please fill all the data")
@@ -63,7 +60,6 @@ const Login = () => {
                         },
                     }
                 )
-
                 if (responce.ok) {
                     let data = await responce.json();
                     console.log("Authantication Token:", data.idToken);
@@ -71,6 +67,34 @@ const Login = () => {
                     console.log(ctx)
                     alert("Logged In Successfully")
                     console.log("Logged In Successfully");
+                    try {
+                        let responce = await fetch(
+                            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD6kzxPr6_3Yh9cSy0_nbCijFvmr538c3w',
+                            {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    idToken:data.idToken,
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            }
+                        )
+
+                        if (responce.ok) {
+                            let data=await responce.json();
+                            console.log(data.users[0])
+                            // data=JSON.parse( data.users[0].photoUrl)
+                            // ctx.setProfileInfo(data);
+                            // let newdata=JSON.parse(data.users[0].photoUrl)
+                            ctx.setProfileInfo({myName:data.users[0].displayName,myUrl:data.users[0].photoUrl});
+                            alert("request successfull")
+                        } else {
+                            throw new Error("Failed")
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
                     history.push('/profile')
                 } else {
                     let errorMessage = 'Authentication failed!';
@@ -81,10 +105,7 @@ const Login = () => {
                 alert("please fill all the data")
             }
         }
-
-
     }
-
     return (
         <div>
             {!ctx.token && <section className="auth">
@@ -127,5 +148,4 @@ const Login = () => {
         </div>
     )
 }
-export default Login;
-
+export default Login
