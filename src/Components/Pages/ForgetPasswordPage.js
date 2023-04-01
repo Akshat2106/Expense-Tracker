@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useHistory } from 'react-router-dom';
 import './Login.Module.css'
 
-const ForgetPasswordPage = () => {
+const ForgetPasswordPage = () =>{
     const enteredEmail=useRef();
     const history=useHistory();
     const submitHandler=async(e)=>{
