@@ -18,7 +18,6 @@ const Login = () => {
     let enteredpass = useRef();
     let enteredEmail = useRef();
     let enteredConfirmPass = useRef();
-    // let ctx = useContext(expContext);
     const history = useHistory();
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -26,7 +25,7 @@ const Login = () => {
             if (enteredEmail.current.value.length > 0 && enteredpass.current.value.length > 0 && enteredConfirmPass.current.value.length > 0) {
                 if (enteredpass.current.value === enteredConfirmPass.current.value) {
                     let responce = await fetch(
-                        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB0otDOfaFjWxMIU5I63kasL3cmb9j00VU',
+                        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD6kzxPr6_3Yh9cSy0_nbCijFvmr538c3w',
                         {
                             method: 'POST',
                             body: JSON.stringify({
@@ -43,7 +42,6 @@ const Login = () => {
                     if (responce.ok) {
                         let data = await responce.json();
                         console.log("Authantication Token:", token);
-                        // ctx.setToken(data.idToken);
                         dispatch(authActions.setToken(data.idToken))
                         localStorage.setItem("token", data.idToken);
                         alert("User has signed Up")
@@ -62,7 +60,7 @@ const Login = () => {
         } else {
             if (enteredEmail.current.value.length > 0 && enteredpass.current.value.length > 0) {
                 let responce = await fetch(
-                    'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB0otDOfaFjWxMIU5I63kasL3cmb9j00VU',
+                    'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD6kzxPr6_3Yh9cSy0_nbCijFvmr538c3w',
                     {
                         method: 'POST',
                         body: JSON.stringify({
@@ -80,13 +78,11 @@ const Login = () => {
                     let data = await responce.json();
                     console.log("Authantication Token:", data.idToken);
                     localStorage.setItem("token", data.idToken);
-
-                    // console.log(ctx)
                     alert("Logged In Successfully")
                     console.log("Logged In Successfully");
                     try {
                         let responce = await fetch(
-                            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=',
+                            'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyD6kzxPr6_3Yh9cSy0_nbCijFvmr538c3w',
                             {
                                 method: 'POST',
                                 body: JSON.stringify({
@@ -100,12 +96,9 @@ const Login = () => {
                         if (responce.ok) {
                             let data = await responce.json();
                             console.log(data.users[0])
-                            // ctx.setProfileInfo({ myName: data.users[0].displayName, myUrl: data.users[0].photoUrl });
                             dispatch(authActions.setProfileInfo({ myName: data.users[0].displayName, myUrl: data.users[0].photoUrl }))
                             alert("request successfull")
-                            // ctx.setToken(() => localStorage.getItem("token"));
                             dispatch(authActions.setToken(localStorage.getItem("token")))
-                            // ctx.setIsLoggedIn(() => true);
                             dispatch(authActions.setIsloggedIn(true))
                         } else {
                             throw new Error("Failed")
@@ -128,7 +121,7 @@ const Login = () => {
     return (
         <div>
             <section className="auth">
-                <h2 className='my-3'>{!login ? "Sign Up" : "Log In"}</h2>
+                <h2 className='my-3 text-dark'>{!login ? "Sign Up" : "Log In"}</h2>
                 <form >
                     <div className="control">
                         <input type='email' id='email' placeholder='Email' ref={enteredEmail} />

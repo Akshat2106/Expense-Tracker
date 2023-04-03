@@ -10,13 +10,12 @@ const ProfileDetails = () => {
     let userName = useRef();
     let profileUrl = useRef();
     // let data= JSON.stringify({myName:userName.current.value,myUrl:profileUrl.current.value});
-    // const ctx=useContext(expContext);
     const handleUpdate = async (e) => {
         e.preventDefault();
         console.log(userName.current.value, profileUrl.current.value);
         try {
             let responce = await fetch(
-                'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyB0otDOfaFjWxMIU5I63kasL3cmb9j00VU',
+                'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD6kzxPr6_3Yh9cSy0_nbCijFvmr538c3w',
                 {
                     method: 'POST',
                     body: JSON.stringify({
@@ -35,7 +34,6 @@ const ProfileDetails = () => {
                 let data = await responce.json();
                 alert("Updated Successfully")
                 console.log("Token:", data.photoUrl);
-                //  ctx.setProfileInfo({myName:data.displayName,myUrl:data.photoUrl})
                 dispatch(authActions.setProfileInfo({myName:data.displayName,myUrl:data.photoUrl}))
             }  else {
                 let errorMessage = 'failed!';
@@ -45,14 +43,13 @@ const ProfileDetails = () => {
         } catch (error) {
             console.log(error)
         }
-    
+
     }
     return (
         <div className='my-2  mx-2'>
             <div className='row'>
             <span className="fst-italic h1 col-sm-6" >
                 Welcome to expanse tracker!!!
-                {/* {console.log(ctx.profileInfo)} */}
             </span>
             <span className='fst-italic bg-warning col-sm-6 float-end'>Your profile is 64% complete.A complete profile has higher chances of landing a job.<Link className='text-primary' to="/details">Complete now</Link></span>
             </div>
