@@ -1,18 +1,19 @@
 import React, { useContext } from 'react'
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
-import { expContext } from '../Store/ExpenseContext'
+// import { expContext } from '../Store/ExpenseContext'
 const DummyScreen = () => {
-  const ctx = useContext(expContext);
+  const token = useSelector(state => state.authentication.token);
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
       let responce = await fetch(
-        'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyD6kzxPr6_3Yh9cSy0_nbCijFvmr538c3w',
+        'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAVT99-GK2zBUOt69gM4rlulJJmZmwYgOU',
         {
           method: 'POST',
           body: JSON.stringify({
             "requestType": "VERIFY_EMAIL",
-            "idToken": ctx.token
+            "idToken": token
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -42,9 +43,10 @@ const DummyScreen = () => {
       <span className='fst-italic bg-warning col-md-4 my-2'>Your profie is incomplete<Link className='text-primary' to="/details">Complete now</Link></span>
       <hr />
       <div>
-        <buttton className="btn btn-primary w-25" onClick={handleVerify}>Veify Your E-mail</buttton>
+        <button className="btn btn-primary w-25" onClick={handleVerify}>Veify Your E-mail</button>
       </div>
     </div>
   )
 }
+
 export default DummyScreen

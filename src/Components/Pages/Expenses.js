@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { expContext } from '../Store/ExpenseContext';
+import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { expenseActions } from '../Store';
 
 
 
 const Expenses = () => {
-    const [editFormOpen,setEditFormOpen]=useState(false);
+    const expenses=useSelector(state=>state.expense.expenses);
+    const dispatch=useDispatch();
     const handleDelete = async (expense) => {
         console.log(expense)
         try {
             let responce = await fetch(
-                `https://tracker-9f91a-default-rtdb.firebaseio.com/${expense.Name}.json`,
+                `https://react-expense-tracker-34c17-default-rtdb.firebaseio.com/expenses/${expense.Name}.json`,
                 {
                     method: 'DELETE',
                     headers: {
@@ -19,10 +21,11 @@ const Expenses = () => {
             )
             if (responce.ok) {
                 // alert("Deleted successfully")
-                const newExpenses = ctx.expenses.filter((item) => {
+                const newExpenses = expenses.filter((item) => {
                     return item.Name !== expense.Name
                 })
-                ctx.setExpenses(newExpenses);
+                // ctx.setExpenses(newExpenses);
+                dispatch(expenseActions.setExpenses(newExpenses))
             } else {
                 throw new Error("Failed to delete expense")
             }
@@ -40,7 +43,7 @@ const Expenses = () => {
         }
         try {
             let responce = await fetch(
-                `https://tracker-9f91a-default-rtdb.firebaseio.com/expenses/${expense.Name}.json`,
+                `https://react-expense-tracker-34c17-default-rtdb.firebaseio.com/expenses/${expense.Name}.json`,
                 {
                     method: 'PUT',
                     body: JSON.stringify(editedExpense),
@@ -62,11 +65,11 @@ const Expenses = () => {
         }
 
     }
-    const ctx = useContext(expContext);
+    // const ctx = useContext(expContext);
     useEffect(async () => {
             try {
                 let responce = await fetch(
-                    'https://tracker-9f91a-default-rtdb.firebaseio.com/expenses.json',
+                    'https://react-expense-tracker-34c17-default-rtdb.firebaseio.com/expenses.json',
                     {
                         method: 'GET',
                         headers: {
@@ -80,7 +83,7 @@ const Expenses = () => {
                     for (const key in data) {
                         finaldata.push({ Name: key, ...data[key] })
                     }
-                    ctx.setExpenses(finaldata)
+                    dispatch(expenseActions.setExpenses(finaldata))
                 } else {
                     throw new Error("Failed to load previous expense")
                 }
@@ -103,10 +106,10 @@ const Expenses = () => {
         }
 
         if (enteredaAmount.current.value.length > 0 && enteredaDesc.current.value.length > 0 && enteredaCatagory.current.value.length > 0) {
-            // console.log(newAddedExpense);
+           
             try {
                 let responce = await fetch(
-                    'https://expensetracker-5f883-default-rtdb.firebaseio.com/',
+                    'https://react-expense-tracker-34c17-default-rtdb.firebaseio.com/expenses.json',
                     {
                         method: 'POST',
                         body: JSON.stringify(newAddedExpense),
@@ -122,7 +125,8 @@ const Expenses = () => {
                     let addedItem = { Name: data.name, ...newAddedExpense }
                     console.log(addedItem)
                     // console.log("Added Item",{Name:data.name,...newAddedExpense})
-                    ctx.setExpenses([...ctx.expenses, addedItem])
+                    // ctx.setExpenses([...expenses, addedItem])
+                    dispatch(expenseActions.setExpenses([...expenses,addedItem]))
                 } else {
                     throw new Error("Failed to add expense")
                 }
@@ -171,8 +175,8 @@ const Expenses = () => {
                     </div>
                 </form>
             </div>
-            {ctx.expenses.length > 0 && <h1 className='text-center'>Expenses</h1>}
-            <div className='row text-center '>{ctx.expenses.map((expense) => {
+            {expenses.length > 0 && <h1 className='text-center'>Expenses</h1>}
+            <div className='row text-center '>{expenses.map((expense) => {
                 return <div key={Math.random()} className="card w-25 col-3">
                     <div className="card-body">
                         <h5 className="card-title">Amount:<span className='text-primary'>{expense.expenseAmount}    </span></h5>
