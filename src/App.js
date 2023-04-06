@@ -1,11 +1,11 @@
 import { Route, Switch } from "react-router-dom";
-import ForgetPassword from "./components/Auth/ForgetPassword";
-import LogIn from "./components/Auth/LogIn";
-import SignUp from "./components/Auth/SignUp";
-import Home from "./components/expense-tracker/Home";
-import Profile from "./components/expense-tracker/Profile";
-import Navbar from "./components/Layout/Navbar";
-import Greeting from "./components/expense-tracker/Greeting";
+import ForgetPassword from "./Components/Auth/ForgetPassword";
+import LogIn from "./Components/Auth/LogIn";
+import SignUp from "./Components/Auth/SignUp";
+import Home from "./Components/expense-tracker/Home";
+import Profile from "./Components/expense-tracker/Profile";
+import Navbar from "./Components/Layout/Navbar";
+import Greeting from "./Components/expense-tracker/Greeting";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { ThemeActions } from "./redux-store/ThemeSlice";
