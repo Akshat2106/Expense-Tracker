@@ -1,0 +1,41 @@
+.expenses {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  border: 1px solid rgb(199, 196, 196);
+  border-radius: 5px;
+  background-color: rgb(33, 37, 41);
+}
+
+.expenses h2 {
+  border-radius: 4px;
+  background-color: #184c53;
+  color: rgb(77, 203, 219);
+}
+
+.expenses h3 {
+  color: rgb(201, 21, 21);
+}
+
+.footer {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.expenses ul {
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+
+.expenses li {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 8px;
+  align-items: center;
+  background-color: rgb(178, 213, 219);
+  border-radius: 10px;
+}
+
+.expenses button {
+  border-radius: 20px;
+}

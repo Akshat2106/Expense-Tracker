@@ -1,42 +1,74 @@
-import { Fragment, useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import DummyScreen from './Components/Layout/DummyScreen';
-import Navbar from './Components/Layout/Navbar'
-import ProfileDetails from './Components/Layout/ProfileDetails';
-import Expenses from './Components/Pages/Expenses';
-import ForgetPasswordPage from './Components/Pages/ForgetPasswordPage';
-import Login from './Components/Pages/Login';
-import { counterActions } from './Components/Store';
-function App() {
-  const token = useSelector(state => state.authentication.token);
-  const isLoggedIn = useSelector(state => state.authentication.isLoggedIn);
-  
-  // let ctx = useContext(expContext);
+import { Route, Switch } from "react-router-dom";
+import ForgetPassword from "./components/Auth/ForgetPassword";
+import LogIn from "./components/Auth/LogIn";
+import SignUp from "./components/Auth/SignUp";
+import Home from "./components/expense-tracker/Home";
+import Profile from "./components/expense-tracker/Profile";
+import Navbar from "./components/Layout/Navbar";
+import Greeting from "./components/expense-tracker/Greeting";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { ThemeActions } from "./redux-store/ThemeSlice";
+
+const App = () => {
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const darkMode = useSelector((state) => state.theme.darkMode);
+  const activatePremium = useSelector((state) => state.theme.activatePremium);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  const themeHandler = () => {
+    dispatch(ThemeActions.changeTheme());
+  };
+
+  useEffect(() => {
+    document.body.style.backgroundColor = darkMode ? "#292c35" : "#fff";
+    if (!isLoggedIn && darkMode) {
+      dispatch(ThemeActions.changeTheme());
+    }
+  }, [darkMode, isLoggedIn, dispatch]);
+
+  useEffect(() => {
+    let id = null;
+    console.log("useEfeect");
+    if (token) {
+      id = setTimeout(() => {
+        console.log("timeout");
+        localStorage.removeItem("token");
+        localStorage.removeItem("email");
+      }, 60000 * 10);
+    }
+    return () => {
+      clearTimeout(id);
+      console.log("cleanup");
+    };
+  }, [token]);
+
   return (
-    <Fragment>
+    <>
       <Navbar />
+      <div className="d-flex justify-content-end">
+        {isLoggedIn && activatePremium && (
+          <button
+            onClick={themeHandler}
+            className={`btn ${darkMode ? "btn-light" : "btn-dark"} me-2`}
+          >
+            {darkMode ? "Light mode" : "Dark mode"}
+          </button>
+        )}
+      </div>
       <Switch>
-        <Route exact path='/'>
-          <Login />
-        </Route>
-        <Route exact path='/forget'>
-          <ForgetPasswordPage />
-        </Route>
-        <Route exact path='/profile'>
-          {token && <DummyScreen />}
-          {!token && <Redirect to='/' />}
-        </Route>
-        <Route exact path='/details'>
-          <ProfileDetails />
-        </Route>
-        <Route exact path='/expenses'>
-          {isLoggedIn && <Expenses />}
-          {!isLoggedIn && <Redirect to='/' />}
-        </Route>
+        {!isLoggedIn && <Route exact path="/signup" component={SignUp} />}
+        {!isLoggedIn && <Route exact path="/login" component={LogIn} />}
+        {!isLoggedIn && (
+          <Route exact path="/forgetpassword" component={ForgetPassword} />
+        )}
+        {isLoggedIn && <Route exact path="/greeting" component={Greeting} />}
+        {isLoggedIn && <Route exact path="/home" component={Home} />}
+        {isLoggedIn && <Route exact path="/profile" component={Profile} />}
       </Switch>
-    </Fragment>
+    </>
   );
-}
+};
 
 export default App;
